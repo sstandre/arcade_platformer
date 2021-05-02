@@ -34,7 +34,7 @@ class Platformer(arcade.Window):
         
         # These lists will hold different sets of sprites
         self.coins = None
-        self.bakcground = None
+        self.background = None
         self.walls = None
         self.ladders = None
         self.goals = None
@@ -201,10 +201,55 @@ class Platformer(arcade.Window):
         Arguments:
             delta_time {float} -- How much time since the last call
         """
-        pass
 
+        # Update the player animation
+        self.player.update_animation(delta_time)
+
+        # Update player movement based on the physics engine
+        self.physics_engine.update()
+
+        # Restrict user movement so they can't walk off screen
+        if self.player.left < 0:
+            self.player.left = 0
+
+        # Check if we've picked up a coin
+        coins_hit = arcade.check_for_collision_with_list(
+            sprite=self.player, sprite_list=self.coins
+        )
+
+        for coin in coins_hit:
+            # Add the coin soce to our score
+            self.score += int(coin.properties["point_value"])
+
+            # Play the coin sound
+            arcade.play_sound(self.coin_sound)
+
+            # Remove the coin
+            coin.remove_from_sprite_lists()
+        
+        # Now chek if we're at the ending goal
+        goals_hit = arcade.check_for_collision_with_list(
+            sprite=self.player, sprite_list=self.goals
+        )
+
+        if goals_hit:
+            # Play the victory sound
+            self.victory_sound.play()
+
+            # Set up the next level
+            self.level += 1
+            self.setup()
+            
     def on_draw(self):
-        pass
+        arcade.start_render()
+
+        # Draw all the sprites
+        self.background.draw()
+        self.walls.draw()
+        self.coins.draw()
+        self.goals.draw()
+        self.ladders.draw()
+        self.player.draw()
 
 if __name__ == "__main__":
     window = Platformer()
