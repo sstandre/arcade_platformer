@@ -4,8 +4,8 @@ Arcade Platformer
 Following the Arcade platformer article at
 https://realpython.com/platformer-python-arcade/
 
-Game artwork from: ...
-Game sounds from: ...
+Game artwork from: www.kenney.nl
+Tile maps from the author
 """
 
 import arcade
