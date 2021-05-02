@@ -24,6 +24,8 @@ MAP_SCALING = 1.0
 GRAVITY = 1.0
 PLAYER_START_X = 65
 PLAYER_START_Y = 256
+PLAYER_MOVE_SPEED = 10
+PLAYER_JUMP_SPEED = 20
 
 # Assets path
 ASSETS_PATH = pathlib.Path(__file__).resolve().parent.parent / "assets"
@@ -54,13 +56,13 @@ class Platformer(arcade.Window):
 
         # Load up our sounds here
         self.coin_sound = arcade.load_sound(
-            str(ASSETS_PATH / "sounds" / "coin.wav")
+            str(ASSETS_PATH / "sounds" / "coin.ogg")
             )
         self.jump_sound = arcade.load_sound(
-            str(ASSETS_PATH / "sounds" / "jump.wav")
+            str(ASSETS_PATH / "sounds" / "jump.ogg")
             )
         self.victory_sound = arcade.load_sound(
-            str(ASSETS_PATH / "sounds" / "victory.wav")
+            str(ASSETS_PATH / "sounds" / "victory.ogg")
             )
  
     def setup(self):
@@ -184,7 +186,27 @@ class Platformer(arcade.Window):
             key {int} -- Which key was pressed
             modifiers {int} -- Which modifiers were down at the time
         """
-        pass
+        
+        # Check for player left or right movement
+        if key in [arcade.key.LEFT, arcade.key.J]:
+            self.player.change_x = -PLAYER_MOVE_SPEED
+        elif key in [arcade.key.RIGHT, arcade.key.L]:
+            self.player.change_x = PLAYER_MOVE_SPEED
+
+        # Check if player can climb up or down
+        elif key in [arcade.key.UP, arcade.key.I]:
+            if self.physics_engine.is_on_ladder():
+                self.player.change_y = PLAYER_MOVE_SPEED
+        elif key in [arcade.key.DOWN, arcade.key.K]:
+            if self.physics_engine.is_on_ladder():
+                self.player.change_y = -PLAYER_MOVE_SPEED
+
+        # Check if player can jump
+        elif key == arcade.key.SPACE:
+            if self.physics_engine.can_jump():
+                self.player.change_y = PLAYER_JUMP_SPEED
+                # Play the jump sound
+                arcade.play_sound(self.jump_sound)
 
     def on_key_release(self, key, modifiers):
         """Process key release
@@ -193,7 +215,26 @@ class Platformer(arcade.Window):
             key {int} -- Which key was released
             modifiers {int} -- Which modifiers were down at the time
         """
-        pass
+        
+        # Check for left or right movement
+        if key in [
+            arcade.key.LEFT,
+            arcade.key.RIGHT,
+            arcade.key.J,
+            arcade.key.L,
+        ]:
+            self.player.change_x = 0
+
+        # Check if player can climb up or down
+
+        elif key in [
+            arcade.key.UP,
+            arcade.key.I,
+            arcade.key.DOWN,
+            arcade.key.K,
+        ]:
+            if self.physics_engine.is_on_ladder():
+                self.player.change_y = 0
     
     def on_update(self, delta_time):
         """Updates the position of all game objects
@@ -239,7 +280,7 @@ class Platformer(arcade.Window):
             # Set up the next level
             self.level += 1
             self.setup()
-            
+
     def on_draw(self):
         arcade.start_render()
 
