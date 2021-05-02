@@ -341,6 +341,9 @@ class Platformer(arcade.Window):
             self.level += 1
             self.setup()
 
+        # Scroll the viewport
+        self.scroll_viewport()
+        
     def on_draw(self):
         arcade.start_render()
 
