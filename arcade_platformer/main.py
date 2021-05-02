@@ -265,16 +265,16 @@ class Platformer(arcade.Window):
 
         # Scroll right
         # Find the current right boundary
-        right_boundary = self.view_left + SCREEN_WIDTH + LEFT_VIEWPORT_MARGIN
+        right_boundary = self.view_left + SCREEN_WIDTH - RIGHT_VIEWPORT_MARGIN
 
         # Are we to the right of this boundary? Then we should scroll right.
         if self.player.right > right_boundary:
-            self.view_left += self.player.left - right_boundary
+            self.view_left += self.player.right - right_boundary
             # But don't scroll past the right edge of the map
             self.view_left = min(self.view_left, self.map_width - SCREEN_WIDTH)
 
         # Scroll top
-        top_boundary = self.view_bottom + SCREEN_HEIGHT + BOTTOM_VIEWPORT_MARGIN
+        top_boundary = self.view_bottom + SCREEN_HEIGHT - TOP_VIEWPORT_MARGIN
         if self.player.top > top_boundary:
             self.view_bottom +=  self.player.top - top_boundary
 
@@ -343,7 +343,7 @@ class Platformer(arcade.Window):
 
         # Scroll the viewport
         self.scroll_viewport()
-        
+
     def on_draw(self):
         arcade.start_render()
 
