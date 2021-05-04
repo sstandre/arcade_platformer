@@ -38,6 +38,60 @@ BOTTOM_VIEWPORT_MARGIN = 150
 # Assets path
 ASSETS_PATH = pathlib.Path(__file__).resolve().parent.parent / "assets"
 
+class TitleView(arcade.View):
+    def __init__(self):
+        super().__init__(self)
+
+        # Find the title image
+        title_image_path = ASSETS_PATH / "images" / "title_image.png"
+
+        # Load our title image
+        self.title_image = arcade.load_texture(title_image_path)
+
+        # Set our display timer
+        self.display_timer = 3.0
+
+        # Are we showing the instrucions?
+        self.show_instructions = False
+
+    def on_update(self, delta_time):
+        """Manages the timer to toggle the instructions
+
+        Arguments:
+        delta_time {float} -- time passed since last update
+        """
+
+        # First, count down the time
+        self.display_timer -= delta_time
+
+        # If the timer has run our, we toggle the instructions
+        if self.display_timer < 0:
+            self.show_instructions = not self.show_instructions
+            self.display_timer = 1.0
+
+    def on_draw(self):
+        # Start the rendering loop
+        arcade.start_render()
+
+        # Draw a rectangle filled with our title image
+        arcade.draw_texture_rectangle(
+            center_x=SCREEN_WIDTH / 2,
+            center_y=SCREEN_HEIGHT / 2,
+            width=SCREEN_WIDTH,
+            height=SCREEN_HEIGHT,
+            texture=self.title_image,
+        )
+
+        # Should we show our instructions?
+        if self.show_instructions:
+            arcade.draw_text(
+                "Enter to Start | I for Instructions",
+                start_x=100,
+                start_y=220,
+                color=arcade.color.INDIGO,
+                font_size=40,
+            )    
+    
 class PlatformerView(arcade.View):
     def __init__(self):
         super().__init__()
