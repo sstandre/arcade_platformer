@@ -90,7 +90,27 @@ class TitleView(arcade.View):
                 start_y=220,
                 color=arcade.color.INDIGO,
                 font_size=40,
-            )    
+            )
+    
+    def on_key_press(self, key, modifiers):
+        """Exit the menu to the game or to the instructions
+
+        Arguments:
+        key -- Which key was presed
+        modifiers -- Which modifiers were active
+        """
+
+        if key == arcade.key.ENTER:
+            game_view = PlatformerView()
+            game_view.setup()
+            self.window.show_view(game_view)
+        elif key == arcade.key.I:
+            instructions_view = InstructionsView()
+            self.window.show_view(instructions_view)
+
+class InstructionsView(arcade.View):
+    def __init__(self):
+        super().__init__(self)
     
 class PlatformerView(arcade.View):
     def __init__(self):
@@ -432,7 +452,6 @@ class PlatformerView(arcade.View):
 
 if __name__ == "__main__":
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    platform_view = PlatformerView()
-    platform_view.setup()
-    window.show_view(platform_view)
+    title_view = TitleView()
+    window.show_view(title_view)
     arcade.run()
