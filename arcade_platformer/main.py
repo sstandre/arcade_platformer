@@ -145,7 +145,56 @@ class InstructionsView(arcade.View):
             title_view = TitleView()
             self.window.show_view(title_view)
 
-            
+
+
+class PauseView(arcade.View):
+    def __init__(self, game_view):
+        super().__init__()
+
+        # Store a reference to the underlying view
+        self.game_view = game_view
+
+        # Store a semitransparent color to use as an overlay
+        self.fill_color = arcade.make_transparent_color(
+            arcade.color.WHITE, transparency=150
+            )
+
+    def on_draw(self):
+        """Draw the underlying screen, blurred, then the Paused text"""
+
+        # First draw the underlying layer. This calls start_render(), so no need
+        # to call it again.
+        self.game_view.on_draw()
+
+        # Now create a filled rect that covers the current viewport
+        # We get the viewport size from the game view
+        arcade.draw_lrtb_rectangle_filled(
+            left=self.game_view.view_left,
+            right=self.game_view.view_left + SCREEN_WIDTH,
+            top=self.game_view.view_bottom + SCREEN_HEIGHT,
+            bottom=self.game_view.view_bottom,
+            color=self.fill_color,
+        )
+        # Now show the Paused text
+        arcade.draw_text(
+            "PAUSED - ESC TO CONTINUE",
+            start_x=self.game_view.view_left + 180,
+            start_y=self.game_view.view_bottom + 300,
+            color=arcade.color.INDIGO,
+            font_size=40,
+        )
+
+    def on_key_press(self, key, modifiers):
+        """Return to game with ESC
+
+        Arguments:
+            key -- Which key was presed
+            modifiers -- Which modifiers were active
+        """
+        if key == arcade.key.ESCAPE:
+            self.window.show_view(self.game_view)
+
+
 class PlatformerView(arcade.View):
     def __init__(self):
         super().__init__()
@@ -330,6 +379,10 @@ class PlatformerView(arcade.View):
                 self.player.change_y = PLAYER_JUMP_SPEED
                 # Play the jump sound
                 arcade.play_sound(self.jump_sound)
+
+        elif key == arcade.key.ESCAPE:
+            pause_view = PauseView(self)
+            self.window.show_view(pause_view)
 
     def on_key_release(self, key, modifiers):
         """Process key release
