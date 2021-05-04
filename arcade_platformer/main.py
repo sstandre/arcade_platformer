@@ -111,7 +111,41 @@ class TitleView(arcade.View):
 class InstructionsView(arcade.View):
     def __init__(self):
         super().__init__()
+
+        instructions_image_path = ASSETS_PATH / "images" / "instructions_image.png"
+
+        self.instructions_image = arcade.load_texture(instructions_image_path)
     
+    def on_draw(self):
+        # Start the rendering loop
+        arcade.start_render()
+
+        # Draw a rectangle filled with our image
+        arcade.draw_texture_rectangle(
+            center_x=SCREEN_WIDTH / 2,
+            center_y=SCREEN_HEIGHT / 2,
+            width=SCREEN_WIDTH,
+            height=SCREEN_HEIGHT,
+            texture=self.instructions_image,
+        )
+
+    def on_key_press(self, key, modifiers):
+        """Return to game title with ESC
+
+        Arguments:
+        key -- Which key was presed
+        modifiers -- Which modifiers were active
+        """
+
+        if key == arcade.key.RETURN:
+            game_view = PlatformerView()
+            game_view.setup()
+            self.window.show_view(game_view)
+        elif key == arcade.key.ESCAPE:
+            title_view = TitleView()
+            self.window.show_view(title_view)
+
+            
 class PlatformerView(arcade.View):
     def __init__(self):
         super().__init__()
