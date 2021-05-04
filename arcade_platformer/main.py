@@ -38,9 +38,9 @@ BOTTOM_VIEWPORT_MARGIN = 150
 # Assets path
 ASSETS_PATH = pathlib.Path(__file__).resolve().parent.parent / "assets"
 
-class Platformer(arcade.Window):
+class PlatformerView(arcade.View):
     def __init__(self):
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__()
         
         # These lists will hold different sets of sprites
         self.coins = None
@@ -377,6 +377,8 @@ class Platformer(arcade.Window):
         
 
 if __name__ == "__main__":
-    window = Platformer()
-    window.setup()
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    platform_view = PlatformerView()
+    platform_view.setup()
+    window.show_view(platform_view)
     arcade.run()
