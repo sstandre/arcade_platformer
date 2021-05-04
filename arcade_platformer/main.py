@@ -35,6 +35,7 @@ TOP_VIEWPORT_MARGIN = 150
 BOTTOM_VIEWPORT_MARGIN = 150
 
 
+
 # Assets path
 ASSETS_PATH = pathlib.Path(__file__).resolve().parent.parent / "assets"
 
@@ -53,6 +54,14 @@ class TitleView(arcade.View):
 
         # Are we showing the instrucions?
         self.show_instructions = False
+
+        # Reset the viewport, in case it was moved
+        arcade.set_viewport(
+            left=0,
+            right=SCREEN_WIDTH,
+            bottom=0,
+            top=SCREEN_HEIGHT,
+        )
 
     def on_update(self, delta_time):
         """Manages the timer to toggle the instructions
@@ -242,7 +251,13 @@ class PlatformerView(arcade.View):
         ladders_layer = "ladders"
 
         # Load the current map
-        game_map = arcade.tilemap.read_tmx(str(map_path))
+        try:
+            game_map = arcade.tilemap.read_tmx(str(map_path))
+        # If I run out of levels, go back to menu
+        except FileNotFoundError:
+            title_view = TitleView()
+            self.window.show_view(title_view)
+            return
 
         #Load the layers
         self.background = arcade.tilemap.process_layer(
@@ -377,9 +392,13 @@ class PlatformerView(arcade.View):
                 # Play the jump sound
                 arcade.play_sound(self.jump_sound)
 
-        elif key == arcade.key.ESCAPE:
+        elif key == arcade.key.P:
             pause_view = PauseView(self)
             self.window.show_view(pause_view)
+
+        elif key == arcade.key.ESCAPE:
+            title_view = TitleView()
+            self.window.show_view(title_view)
 
     def on_key_release(self, key, modifiers):
         """Process key release
@@ -469,6 +488,9 @@ class PlatformerView(arcade.View):
         if self.player.left < 0:
             self.player.left = 0
 
+        # Scroll the viewport
+        self.scroll_viewport()
+
         # Check if we've picked up a coin
         coins_hit = arcade.check_for_collision_with_list(
             sprite=self.player, sprite_list=self.coins
@@ -496,9 +518,6 @@ class PlatformerView(arcade.View):
             # Set up the next level
             self.level += 1
             self.setup()
-
-        # Scroll the viewport
-        self.scroll_viewport()
 
     def on_draw(self):
         arcade.start_render()
