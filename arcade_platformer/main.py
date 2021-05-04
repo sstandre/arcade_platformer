@@ -40,7 +40,7 @@ ASSETS_PATH = pathlib.Path(__file__).resolve().parent.parent / "assets"
 
 class TitleView(arcade.View):
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
 
         # Find the title image
         title_image_path = ASSETS_PATH / "images" / "title_image.png"
@@ -110,7 +110,7 @@ class TitleView(arcade.View):
 
 class InstructionsView(arcade.View):
     def __init__(self):
-        super().__init__(self)
+        super().__init__()
     
 class PlatformerView(arcade.View):
     def __init__(self):
@@ -455,3 +455,4 @@ if __name__ == "__main__":
     title_view = TitleView()
     window.show_view(title_view)
     arcade.run()
+    
