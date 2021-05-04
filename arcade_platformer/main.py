@@ -28,7 +28,7 @@ PLAYER_MOVE_SPEED = 10
 PLAYER_JUMP_SPEED = 20
 
 # Viewport margins
-# How close do we have tob e to scroll the viewport?
+# How close do we have to be to scroll the viewport?
 LEFT_VIEWPORT_MARGIN = 50
 RIGHT_VIEWPORT_MARGIN = 300
 TOP_VIEWPORT_MARGIN = 150
@@ -145,8 +145,6 @@ class InstructionsView(arcade.View):
             title_view = TitleView()
             self.window.show_view(title_view)
 
-
-
 class PauseView(arcade.View):
     def __init__(self, game_view):
         super().__init__()
@@ -193,7 +191,6 @@ class PauseView(arcade.View):
         """
         if key == arcade.key.ESCAPE:
             self.window.show_view(self.game_view)
-
 
 class PlatformerView(arcade.View):
     def __init__(self):
@@ -392,17 +389,15 @@ class PlatformerView(arcade.View):
             modifiers {int} -- Which modifiers were down at the time
         """
         
-        # Check for left or right movement
-        if key in [
-            arcade.key.LEFT,
-            arcade.key.RIGHT,
-            arcade.key.J,
-            arcade.key.L,
-        ]:
+        # Check for left movement
+        if key in [arcade.key.LEFT, arcade.key.J] and self.player.change_x < 0:
+            self.player.change_x = 0
+
+        # Check for right movement
+        if key in [arcade.key.RIGHT, arcade.key.I] and self.player.change_x > 0:
             self.player.change_x = 0
 
         # Check if player can climb up or down
-
         elif key in [
             arcade.key.UP,
             arcade.key.I,
